@@ -1,0 +1,50 @@
+Doctors page customisation:
+add checkbox in doctors edit and add for remind with sms, 
+plus add remond with custom text,
+plus checkbox if patient arrived.
+plus add posibility so search doctors? 
+
+********************************************
+
+Work graph page:
+in work graph add posibility to dinamically assign time for patients
+time should be written withou pm or am ? like 20:00
+when adding new, or editing delete TRIAL logos
+
+********************************************
+
+Patient page customisation:
+set up patients html page
+add posibility to search for patient
+
+********************************************
+
+Holidays page:
+set up holidays page
+
+********************************************
+
+Settings page:
+add new settings page with parameters:
+default sms text for all patients
+How old data you wanna see in graph
+
+**********************************************
+
+
+python calculator
+
+enter first val 
+1
+enter second 
+2
+enter opration (+,-,/.*)
++
+result : 4
+
+
+js
+val1 <input></input>
+operation <input></input> (+,-,/.*)
+val2 <input></input>
+button skaiciuoti

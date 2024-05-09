@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Gydytojai{% endblock %}
+
+{% block css %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jqueryscripttop.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='font-awesome.min.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='g_fonts.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='material_icons.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='doctors_page.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='timepicker.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='timepicker_style.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" >
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class='doctor_main'>
+
+	<div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6">
+						<h2 class="main_logo" ><b>GYDYTOJŲ DUOMENYS</b></h2>
+					</div>
+					<div class="col-sm-6">
+						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Pridėti naują</span></a>
+						<a id="delete_checked" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Ištrinti</span></a>
+					</div>
+				</div>
+			</div>
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>
+							<span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
+						</th>
+						<th>Vardas Pavardė</th>
+						<th>El. Paštas</th>
+						<th>Profesija</th>
+						<th>Tel. Numeris</th>
+						<th>Laikas Pacientui</th>
+						<th>Darbo grafikas</th>
+
+						<th>Veiksmai</th>
+					</tr>
+				</thead>
+				<tbody id="main_data_div">
+
+					<div class="parent" >
+					{%for p in id:%}
+					<tr id="tr{{id[loop.index-1]}}">
+
+						<td>
+							<span class="custom-checkbox">
+								<input type="checkbox" id="checkbox{{id[loop.index-1]}}" name="options[]" value="{{ id[loop.index-1] }}">
+								<label for="checkbox{{id[loop.index-1]}}"></label>
+							</span>
+						</td >
+							<td id="n{{ id[loop.index-1] }}" >{{name[loop.index-1]}}</td>
+							<td id="e{{ id[loop.index-1] }}" >{{mail[loop.index-1]}}</td>
+							<td id="p{{ id[loop.index-1] }}">{{profession[loop.index-1]}}</td>
+							<td id="nm{{ id[loop.index-1] }}">{{number[loop.index-1]}}</td>
+							<td id="l{{ id[loop.index-1] }}">{{time_for_patient[loop.index-1]}}</td>
+
+							<td id="g{{ id[loop.index-1] }}" name="{{loop.index-1}}" >
+
+                                 {{mon_start[loop.index-1]}}{{mon_end[loop.index-1]}}
+							     {{tue_start[loop.index-1]}}{{tue_end[loop.index-1]}}
+								 {{wed_start[loop.index-1]}}{{wed_end[loop.index-1]}}
+								 {{thu_start[loop.index-1]}}{{thu_end[loop.index-1]}}
+								 {{fri_start[loop.index-1]}}{{fri_end[loop.index-1]}}
+								 {{sat_start[loop.index-1]}}{{sat_end[loop.index-1]}}
+								 {{sun_start[loop.index-1]}}{{sun_end[loop.index-1]}}
+
+							</td>
+						<td>
+							<a id="edit_modal" href="#editEmployeeModal" name="edit_{{ id[loop.index-1] }}"  class="edit crud_edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Redaguoti">&#xE254;</i></a>
+							<a id="delete_modal" href="#deleteEmployeeModal" name="delete_{{ id[loop.index-1] }}"  class="delete crud_delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Ištrinti">&#xE872;</i></a>
+						</td>
+
+					</tr>
+					{%endfor%}
+					</div>
+
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- new doctor registration modal -->
+
+<div id="addEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_add_new" data-parsley-validate>
+				<div class="modal-header">
+					<h4 class="modal-title">Naujo gydytojo registracija</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+
+
+					<div class="form-group">
+						<label>Vardas pavardė</label>
+						<input id="new_doctor_name" type="text" class="form-control" required data-parsley-required-message="Įveskite vardą ir pavardę" >
+					</div>
+					<div class="form-group">
+						<label>El. Paštas</label>
+						<input id="new_doctor_email" type="email" class="form-control" data-parsley-trigger="keyup" data-parsley-pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/" data-parsley-pattern-message="El.pašto pvz. : pastas@pastas.lt" data-parsley-required-message="El.pašto pvz. : pastas@pastas.lt">
+					</div>
+					<div class="form-group">
+						<label>Profesija</label>
+						<input id="new_doctor_profession" type="text" required class="form-control" data-parsley-required-message="Įveskite daktaro profesiją" data-parsley-pattern-message="El.pašto pvz. : pastas@pastas.lt">
+					</div>
+					<div class="form-group">
+						<label>Tel. Numeris</label>
+						<input id="new_doctor_number" type="text" required class="form-control" data-parsley-trigger="keyup" data-parsley-required-message="Įveskite tel. numerį pvz: +37060000001" data-parsley-pattern-message="Lauke turi būti tik skaitmenys pvz. : +1234567 ir ne trumpesnis nei 7 skaitmenys" data-parsley-pattern="^\+{0,1}\d{7,30}">
+					</div>
+					<div class="row form-group">
+						<label class="col-4 mt_10">Pacientui skirtas laikas (minutės)</label>
+						<input id="time_for_patient" required="" placeholder="" type="text" class="form-control col-4 ml_10" data-parsley-trigger="keyup" data-parsley-required-message="" data-parsley-pattern-message="" data-parsley-pattern="\d{1,3}">
+						<a href="#" id="time_for_patient_set_btn" class="btn btn-success form-control col-3">Nustatyti</a>
+					</div>
+
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Pirmadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time"  type="text">
+					</div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Antradienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Trečiadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Ketvirtadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Penktadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Šeštadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Sekmadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 form-control stepExample1 new_doc_start_time" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 form-control stepExample1 new_doc_end_time" type="text">
+					  </div>
+
+				</div>
+				<div class="modal-footer">
+					<input type="button"  class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input id="add_new_doctor" href="#" type="submit" class="btn btn-info" value="Pridėti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- edit doctor registration modal-->
+<div id="editEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_save" data-parsley-validate>
+				<div class="modal-header">
+					<h4 class="modal-title">Redaguoti duomenys</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Vardas pavardė</label>
+						<input id="name_surname" type="text" class="form-control" required data-parsley-required-message="Įveskite vardą ir pavardę" >
+					</div>
+					<div class="form-group">
+						<label>El. Paštas</label>
+						<input id="email" type="email" class="form-control" data-parsley-trigger="keyup" data-parsley-pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/" data-parsley-pattern-message="El.pašto pvz. : pastas@pastas.lt" data-parsley-required-message="El.pašto pvz. : pastas@pastas.lt">
+					</div>
+					<div class="form-group">
+						<label>Profesija</label>
+						<input id="profession" type="text" required class="form-control" data-parsley-required-message="Įveskite daktaro profesiją" data-parsley-pattern-message="El.pašto pvz. : pastas@pastas.lt">
+					</div>
+					<div class="form-group">
+						<label>Tel. Numeris</label>
+						<input id="number" type="text" required class="form-control" data-parsley-trigger="keyup" data-parsley-required-message="Įveskite tel. numerį pvz: +37060000001" data-parsley-pattern-message="Lauke turi būti tik skaitmenys pvz. : +1234567 ir ne trumpesnis nei 7 skaitmenys" data-parsley-pattern="^\+{0,1}\d{7,30}">
+					</div>
+					<div class="row form-group">
+						<label class="col-4 mt_10">Pacientui skirtas laikas (minutės)</label>
+						<input id="time_for_patient_edit" required="" placeholder="" type="text" class="form-control col-4 ml_10" data-parsley-trigger="keyup" data-parsley-required-message="" data-parsley-pattern-message="" data-parsley-pattern="\d{1,3}">
+						<a href="#" id="time_for_patient_set_btn_edit" class="btn btn-success form-control col-3">Nustatyti</a>
+					</div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Pirmadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 mon_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 mon_end_edit form-control stepExample1 new_doc_end_time_edit"  type="text">
+					</div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Antradienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 tue_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 tue_end_edit form-control stepExample1 new_doc_end_time_edit" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Trečiadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 wed_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 wed_end_edit form-control stepExample1 new_doc_end_time_edit" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Ketvirtadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 thu_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 thu_end_edit form-control stepExample1 new_doc_end_time_edit" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Penktadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 fri_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 fri_end_edit form-control stepExample1 new_doc_end_time_edit" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Šeštadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 sat_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 sat_end_edit form-control stepExample1 new_doc_end_time_edit" type="text">
+					  </div>
+
+					<div class="row form-group">
+						<h6 class="col-sm-4 mt_10">Sekmadienis</h6>
+						<input title="Darbo pradžios laikas" class="col-sm-3 sun_start_edit form-control stepExample1 new_doc_start_time_edit" type="text">
+						<input title="Darbo pabaigos laikas" class="col-sm-3 sun_end_edit form-control stepExample1 new_doc_end_time_edit" type="text">
+					  </div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" href="#" id="save_btn_modal" class="btn btn-info" value="Išsaugoti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<!-- delete doctor data modal -->
+<div id="deleteEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_delete">
+				<div class="modal-header">
+					<h4 class="modal-title">Ištrinti</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Ar tikrai norite ištrinti?</p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" id="delete_btn_modal" class="btn btn-danger" value="Ištrinti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- delete doctor data modal checked in checkbox-->
+<div id="deleteEmployeeModal_checkbox" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_delete_checked">
+				<div class="modal-header">
+					<h4 class="modal-title">Ištrinti</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Ar tikrai norite ištrinti?</p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" id="delete_btn_modal_checkbox" class="btn btn-danger" value="Ištrinti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block script %}
+
+
+<script>
+
+var mon_start = {{ mon_start | tojson }};
+var tue_start = {{ tue_start | tojson }};
+var wed_start = {{ wed_start | tojson }};
+var thu_start = {{ thu_start | tojson }};
+var fri_start = {{ fri_start | tojson }};
+var sat_start = {{ sat_start | tojson }};
+var sun_start = {{ sun_start | tojson }};
+
+var mon_end = {{ mon_end | tojson }};
+var tue_end = {{ tue_end | tojson }};
+var wed_end = {{ wed_end | tojson }};
+var thu_end = {{ thu_end | tojson }};
+var fri_end = {{ fri_end | tojson }};
+var sat_end = {{ sat_end | tojson }};
+var sun_end = {{ sun_end | tojson }};
+
+</script>
+
+
+
+<script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='base.js') }}"></script>
+<script src="{{ url_for('static', filename='doctors_page.js') }}"></script>
+<script src="{{ url_for('static', filename='timepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='parsley.min.js') }}"></script>
+<!--<script src="{{ url_for('static', filename='timepicker_main.js') }}"></script>-->
+{% endblock %}

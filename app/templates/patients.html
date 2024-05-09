@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Pacientai{% endblock %}
+
+{% block css %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='font-awesome.min.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='g_fonts.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='material_icons.css') }}" >
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='patients_page.css') }}" >
+{% endblock %}
+
+{% block content %}
+
+
+<div class='doctor_main'>
+
+	<div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6">
+						<h2 class="main_logo" ><b>PACIENTŲ DUOMENYS</b></h2>
+					</div>
+					<div class="col-sm-6">
+						<a href="#addEmployeeModal" id="add_doctor_btn" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Pridėti naują</span></a>
+						<a id="delete_checked" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Ištrinti</span></a>
+					</div>
+				</div>
+			</div>
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>
+							<span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
+						</th>
+						<th>Vardas Pavardė</th>
+						<th>El. Paštas</th>
+						<th>Asm. Kodas</th>
+						<th>Tel. Numeris</th>
+						<th>Priskirtas gydytojas</th>
+						<th>Veiksmai</th>
+					</tr>
+				</thead>
+				<tbody id="main_data_div">
+
+				{% if id|length > 0 %}
+					{%for p in id:%}
+					<tr id="tr{{id[loop.index-1]}}">
+						<td>
+							<span class="custom-checkbox">
+								<input type="checkbox" id="checkbox{{id[loop.index-1]}}" name="options[]" value="{{ id[loop.index-1] }},{{ doctor_id[loop.index-1] }}">
+								<label for="checkbox{{id[loop.index-1]}}"></label>
+							</span>
+						</td>
+
+						<td id="n{{ id[loop.index-1] }}">{{name[loop.index-1]}}  {{surname[loop.index-1]}}</td>
+						<td id="e{{ id[loop.index-1] }}">{{mail[loop.index-1]}}</td>
+						<td id="p{{ id[loop.index-1] }}">{{id_code[loop.index-1]}}</td>
+						<td id="nm{{ id[loop.index-1] }}">{{number[loop.index-1]}}</td>
+						<td id="l{{ id[loop.index-1] }}">{{doctor_name[loop.index-1]}}</td>
+						<td>
+							<a href="#editEmployeeModal" name="edit_{{ id[loop.index-1] }}"  class=" edit crud_edit" data-toggle="modal"><i class="material-icons edit crud_edit" data-toggle="tooltip" title="Redaguoti">&#xE254;</i></a>
+							<a href="#deleteEmployeeModal" name="delete_{{ id[loop.index-1] }}" class="delete crud_delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Ištrinti">&#xE872;</i></a>
+						</td>
+					</tr>
+			     {%endfor%}
+				{%endif%}
+
+
+
+
+
+
+
+				</tbody>
+			</table>
+			<div class="clearfix">
+				<div class="hint-text">Rodoma <b>5</b> iš <b>25</b> įrašų</div>
+				<ul class="pagination">
+					<li class="page-item disabled"><a href="#">  <<  </a></li>
+					<li class="page-item"><a href="#" class="page-link">1</a></li>
+					<li class="page-item"><a href="#" class="page-link">2</a></li>
+					<li class="page-item active"><a href="#" class="page-link">3</a></li>
+					<li class="page-item"><a href="#" class="page-link">4</a></li>
+					<li class="page-item"><a href="#" class="page-link">5</a></li>
+					<li class="page-item"><a href="#" class="page-link">  >> </a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Edit Modal HTML -->
+<div id="addEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_add_new" data-parsley-validate>
+				<div class="modal-header">
+					<h4 class="modal-title">Pridėti nauja pacientą</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Vardas</label>
+						<input id="new_patient_name" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Pavardė</label>
+						<input id="new_patient_surname" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>El. Paštas</label>
+						<input  id="new_patient_email" type="email" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Asm. Kodas</label>
+						<input  id="new_patient_code" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Tel. Numeris</label>
+						<input  id="new_patient_number" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Priskirtas gydytojas</label>
+						<select id="dropdown_assigned_doctor"  name="dropdown"  class="form-control">
+							{%for ids in docIds:%}
+								<option class="getOptVal" value="{{ids}}">{{docNames[loop.index-1]}}</option>
+							{%endfor%}
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" id="add_new_patient"  class="btn btn-success" value="Pridėti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Edit Modal HTML -->
+<div id="editEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">
+					<h4 class="modal-title">Redaguoti duomenys</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Vardas</label>
+						<input id="edit_name" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Pavardė</label>
+						<input id="edit_surname" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>El. Paštas</label>
+						<input id="edit_email"  type="email" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Asm. Kodas</label>
+						<input id="edit_id_code"  type="email" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Tel. Numeris</label>
+						<input id="edit_number"  type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Priskirtas gydytojas</label>
+						<input id="edit_doctor"  type="text" class="form-control" required>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" class="btn btn-info" value="Išsaugoti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<!-- delete patient data modal -->
+<div id="deleteEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_delete">
+				<div class="modal-header">
+					<h4 class="modal-title">Ištrinti</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Ar tikrai norite ištrinti?</p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" id="delete_btn_modal" class="btn btn-danger" value="Ištrinti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- delete patient data modal checked in checkbox-->
+<div id="deleteEmployeeModal_checkbox" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="form_delete_checked">
+				<div class="modal-header">
+					<h4 class="modal-title">Ištrinti</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Ar tikrai norite ištrinti?</p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Atšaukti">
+					<input type="submit" id="delete_btn_modal_checkbox" class="btn btn-danger" value="Ištrinti">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+var docIds = {{docIds|tojson}};
+var docNames = {{docNames|tojson}};
+
+
+</script>
+
+
+
+<script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='base.js') }}"></script>
+<script src="{{ url_for('static', filename='patients_page.js') }}"></script>
+<script src="{{ url_for('static', filename='parsley.min.js') }}"></script>
+{% endblock %}

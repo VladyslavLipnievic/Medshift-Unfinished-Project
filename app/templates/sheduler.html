@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Sheduler{% endblock %}
+
+{% block css %}
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+<link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ url_for('static', filename='sheduler.min.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ url_for('static', filename='sheduler.style.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ url_for('static', filename='parsley.css') }}" rel="stylesheet" type="text/css" >
+<link href="{{ url_for('static', filename='material_icons.css') }}" rel="stylesheet" type="text/css" >
+{% endblock %}
+
+{% block content %}
+
+
+<div class="sheduler_css">
+        <div class="demo-employee-shifts">
+        <div style="height:100%">
+                <div class="md-employee-shifts" id="demo-employee-shifts-calendar"></div>
+
+    <div class="employee-shifts-popup" id="demo-employee-shifts-popup">
+        <div class="mbsc-form-group">
+            <label for="employee-shifts-start">
+                Vizito pradžia
+                <input data-dropdown="true" id="employee-shifts-start" mbsc-input />
+            </label>
+            <label for="employee-shifts-end">
+                Vizito pabaiga
+                <input data-dropdown="true" id="employee-shifts-end" mbsc-input />
+            </label>
+
+            <form data-parsley-validate id="form">
+
+            <label>
+                Vardas
+                <input data-parsley-required-message="Laukas privalomas" id="patient_name_form" mbsc-input required/>
+            </label>
+
+            <label>
+                Pavardė
+                <input data-parsley-required-message="Laukas privalomas" id="patient_surname_form" mbsc-input required/>
+            </label>
+
+            <label>
+                Tel. Numeris
+                <input data-parsley-pattern="^\+{0,1}\d{7,30}" data-parsley-pattern-message="Lauke turi būti tik skaitmenys pvz. : +1234567"  data-parsley-trigger="keyup" id="patient_number_form" mbsc-input/>
+            </label>
+            <label>
+                El. Paštas
+                <input data-parsley-pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/" data-parsley-pattern-message="El.pašto pvz. : pastas@pastas.lt" data-parsley-trigger="keyup" id="patient_email_form" mbsc-input/>
+            </label>
+            <label>
+                Asm. Kodas
+                <input data-parsley-error-message="lauke turi būti skaitmenys" data-parsley-trigger="keyup" data-parsley-type="digits" id="patient_id_code_form" mbsc-input />
+            </label>
+           <div class="line">
+               <input class="my-checkbox" id="sms_remind_form" type="checkbox" value="1" />
+              Priminti apie vizitą SMS žinute
+            </div>
+
+            <div class="line">
+               <input class="my-checkbox" id="arrived_form" type="checkbox" value="1" />
+              Pacientas atvyko
+            </div>
+
+            <div class="line">
+               <input class="my-checkbox" id="send_by_clinic" type="checkbox" value="1" />
+              Su siuntimu
+            </div>
+
+
+
+            <div id="demo-employee-shifts-date"></div>
+
+<button class="btn btn-primary" hidden id="form_submit_btn" type="submit">Submit</button>
+</form>
+
+
+        </div>
+        <div class="mbsc-form-group">
+            <label>
+                Pastabos
+                <textarea id="employee-shifts-notes" mbsc-textarea></textarea>
+            </label>
+        </div>
+        <div class="mbsc-button-group">
+            <button  class="mbsc-button-block" data-color="danger" data-variant="outline" id="employee-shifts-delete" mbsc-button>Ištrinti</button>
+        </div>
+    </div>
+        </div>
+
+
+
+    </div>
+    </div>
+
+
+
+
+<!--delete modal-->
+<div class="modal fade" id="delete_modal">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content">
+			<div class="modal-header flex-column">
+				<div class="icon-box">
+					<i class="material-icons">&#xE5CD;</i>
+				</div>
+				<h4 class="modal-title w-100">Įrašo ištrinimas</h4>
+                <button aria-hidden="true" class="close" data-dismiss="modal" type="button">&times;</button>
+			</div>
+			<div class="modal-body">
+				<p>Ar tikrai norite ištrinti įrašą?</p>
+			</div>
+			<div class="modal-footer justify-content-center">
+				<button class="btn btn-secondary" data-dismiss="modal" type="button">Atšaukti</button>
+				<button class="btn btn-danger" id="confirm_delete" type="button">Ištrinti</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+var doctors_data = JSON.parse('{{ doctors_data | tojson | safe}}')
+var patients_data = JSON.parse('{{ patients_data | tojson | safe}}')
+
+</script>
+
+<script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='sheduler.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='base.js') }}"></script>
+<script src="{{ url_for('static', filename='sheduler_settings.js') }}"></script>
+<script src="{{ url_for('static', filename='parsley.min.js') }}"></script>
+
+
+
+
+{% endblock %}
